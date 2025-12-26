@@ -1,3 +1,19 @@
+# vanguard26
+
+robot code for our community FTC team. the default branch is `Vanguard2`.
+
+start with [teamcode](teamcode/src/main/java/org/firstinspires/ftc/teamcode):
+- [basicteleop.java](teamcode/src/main/java/org/firstinspires/ftc/teamcode/basicteleop.java)
+- [drivetrain.java](teamcode/src/main/java/org/firstinspires/ftc/teamcode/components/drivetrain.java)
+- [blueauto.java](teamcode/src/main/java/org/firstinspires/ftc/teamcode/components/blueauto.java)
+- [testteleop1.java](teamcode/src/main/java/org/firstinspires/ftc/teamcode/tests/testteleop1.java)
+
+the team code covers mecanum driving, intake/shooter and servo controls, and Pedro Pathing autonomous routines. hardware names and tuning values depend on the robot configuration.
+
+the rest of this repository includes the FIRST sdk. its original setup instructions and release notes are kept below.
+
+---
+
 ## NOTICE
 
 This repository contains the public FTC SDK for the DECODE (2025-2026) competition season.
