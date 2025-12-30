@@ -38,25 +38,11 @@ public class DriveTrain {
 
     public void TeleOpControl(boolean precision, double movement,
                               double rotation, double strafe) {
-        // forward, strafe, and turn
-        double leftFrontPower = movement + strafe + rotation;
-        double leftBackPower = movement - strafe + rotation;
-        double rightFrontPower = movement - strafe - rotation;
-        double rightBackPower = movement + strafe - rotation;
-
-        // keep power between -1 and 1
-        double max = Math.max(1.0, Math.max(
-                Math.max(Math.abs(leftFrontPower), Math.abs(leftBackPower)),
-                Math.max(Math.abs(rightFrontPower), Math.abs(rightBackPower))
-        ));
-
-        // slow mode
-        double speed = precision ? 0.4 : 1.0;
-
-        leftFront.setPower(leftFrontPower / max * speed);
-        leftBack.setPower(leftBackPower / max * speed);
-        rightFront.setPower(rightFrontPower / max * speed);
-        rightBack.setPower(rightBackPower / max * speed);
+        double[] powers = MecanumMixer.mix(movement, strafe, rotation, precision ? 0.4 : 1.0);
+        leftFront.setPower(powers[0]);
+        leftBack.setPower(powers[1]);
+        rightFront.setPower(powers[2]);
+        rightBack.setPower(powers[3]);
     }
 
     public double getLeftFrontPower() {
