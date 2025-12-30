@@ -1,3 +1,26 @@
+# Vanguard26 team code
+
+Our implementation lives in [TeamCode](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/), including the drive train, autonomous components, and OpModes. `FtcRobotController` contains the upstream FTC SDK and examples; it should not be confused with team-authored implementation.
+
+## Drive control
+
+- [MecanumMixer](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Components/MecanumMixer.java): uniform wheel normalization, deadband, finite-input checks.
+- [DriveController](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Components/DriveController.java): optional slew limits, command-age watchdog, voltage compensation, enable switch, and immediate stop.
+- [DriveTrain](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Components/DriveTrain.java): hardware binding and motor output. `applyControlled()` opts into the timed controller; existing TeleOp mixing is unchanged.
+
+```sh
+mkdir -p build/host
+javac -d build/host TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Components/{MecanumMixer,DriveController}.java host-tests/*.java
+java -cp build/host MecanumMixerTest
+java -cp build/host DriveControllerTest
+```
+
+Submit a drive request using monotonic seconds, then sample with the same clock, a battery-voltage reading, and an enable-switch state. Invalid battery data, stale commands, and a released enable switch produce immediate zero output. Emergency stop clears the request and requires a new command. Slew calculations cap elapsed time so a stalled loop does not create a large power jump.
+
+The new envelope is host-tested and opt-in. Tune constants and verify motor directions, watchdog behavior, and power response on the physical robot before using it in an OpMode.
+
+## Upstream SDK documentation
+
 # vanguard26
 
 robot code for our community FTC team. the default branch is `Vanguard2`.

@@ -45,6 +45,16 @@ public class DriveTrain {
         rightBack.setPower(powers[3]);
     }
 
+    /** Opt-in envelope for an OpMode with monotonic timestamps and an enable switch. */
+    public void applyControlled(DriveController controller, double nowSeconds,
+                                double batteryVoltage, boolean enabled) {
+        double[] powers = controller.sample(nowSeconds, batteryVoltage, enabled);
+        leftFront.setPower(powers[0]);
+        leftBack.setPower(powers[1]);
+        rightFront.setPower(powers[2]);
+        rightBack.setPower(powers[3]);
+    }
+
     public double getLeftFrontPower() {
         return leftFront.getPower();
     }
