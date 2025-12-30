@@ -1725,3 +1725,11 @@ Changes include:
 ## Implementation details
 
 `MecanumMixer` separates wheel normalization from hardware access. Host-side checks in `host-tests/` validate mixing, power bounds, input deadbands, and non-finite command rejection.
+
+## Optional localization and heading helpers
+
+`Components/MecanumOdometry.java` integrates calibrated encoder deltas and IMU yaw into an immutable pose. Wheel order matches `MecanumMixer`: front-left, rear-left, front-right, rear-right. Configure distance per tick, lateral scale, and maximum wheel speed in consistent units. The estimator uses constant-body-twist integration, handles yaw wrapping, clones input arrays, and rejects backwards time or implausible encoder jumps without changing the last valid pose. Heading change between samples must stay within half a turn to avoid angular aliasing.
+
+`Components/HeadingController.java` provides bounded proportional alignment, angular wrapping, settling duration, timeout, and cancellation. Feed its turn demand through the existing `DriveController` envelope before commanding motors. A released enable switch cancels alignment. Neither helper activates an OpMode, writes hardware, or replaces the team's Pedro localization. Geometry, encoder signs, yaw convention, power limits, and tolerances need physical-robot calibration.
+
+`host-tests/LocalizationTest.java` checks straight travel, strafe, curved motion, wheel-jump rejection, heading wrap, timeout, settling, and disable behavior. Compile it with the four independent component classes and the other host checks. These checks do not substitute for the Android/FTC build or on-robot verification.
