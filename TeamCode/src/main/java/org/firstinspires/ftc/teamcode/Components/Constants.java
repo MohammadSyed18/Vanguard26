@@ -1,4 +1,4 @@
-/*
+
 package org.firstinspires.ftc.teamcode.Components;
 
 import com.pedropathing.follower.Follower;
@@ -23,8 +23,8 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .leftRearMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
-            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE;
-    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, )
+            .rightRearMotorDirection(DcMotorSimple.Direction.REVERSE);
+    public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
@@ -33,4 +33,3 @@ public class Constants {
                 .build();
     }
 }
-*/

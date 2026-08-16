@@ -1,4 +1,4 @@
-/**
+
 package org.firstinspires.ftc.teamcode.Components;
 
 import android.provider.SyncStateContract;
@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.util.Timer;
-import com.sun.tools.javac.util.Constants;
 
 @Autonomous(group = "Autonomous", name = "BlueAuton")
 public class BlueAuto extends OpMode {
@@ -31,7 +30,7 @@ public class BlueAuto extends OpMode {
     private final Pose startPose =
             new Pose(20.82138517618469, 129.65249088699878, Math.toRadians(137));
     private final Pose shootPose =
-            new Pose(47.59173754556501, 111.9805589307412, Math.toRadians(137));
+            new Pose(20.82138517618469, 140, Math.toRadians(137));
 
     private PathChain Start2Shoot;
 
@@ -73,7 +72,7 @@ public class BlueAuto extends OpMode {
         pathTimer = new Timer();
         opModeTimer = new Timer();
         opModeTimer.resetTimer();;
-        follower = Constants.createFollower
+        follower = Constants.createFollower(hardwareMap);
     }
 
     @Override
@@ -81,4 +80,3 @@ public class BlueAuto extends OpMode {
 
     }
 }
-**/
