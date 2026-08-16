@@ -195,11 +195,23 @@ public class BlueAuto extends OpMode {
         pathTimer = new Timer();
         opModeTimer = new Timer();
         opModeTimer.resetTimer();;
+
         follower = Constants.createFollower(hardwareMap);
+
+        buildPaths();
+
+        follower.setStartingPose(startPose);
     }
 
     @Override
     public void loop() {
+        follower.update();
+        statePathUpdate();
 
+        telemetry.addData("Path State", pathState);
+        telemetry.addData("X", follower.getPose().getX());
+        telemetry.addData("Y", follower.getPose().getY());
+        telemetry.addData("Heading", follower.getPose().getHeading());
+        telemetry.update();
     }
 }
