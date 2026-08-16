@@ -149,7 +149,7 @@ public class BlueAuto extends OpMode {
         SHOOT_PRELOAD
     }
 
-    org.firstinspires.ftc.teamcode.Components.BlueAuto.PathState pathState;
+    org.firstinspires.ftc.teamcode.Tests.BlueAuto.PathState pathState;
     private final Pose startPose =
             new Pose(20.82138517618469, 129.65249088699878, Math.toRadians(137));
     private final Pose shootPose =
@@ -168,8 +168,8 @@ public class BlueAuto extends OpMode {
         switch(pathState) {
             case DRIVE_STARTPOS_SHOOT_POS:
                 follower.followPath(Start2Shoot, true);
-                pathState = org.firstinspires.ftc.teamcode.Components.BlueAuto.PathState.SHOOT_PRELOAD;
-                setPathState(org.firstinspires.ftc.teamcode.Components.BlueAuto.PathState.SHOOT_PRELOAD);
+                pathState = org.firstinspires.ftc.teamcode.Tests.BlueAuto.PathState.SHOOT_PRELOAD;
+                setPathState(org.firstinspires.ftc.teamcode.Tests.BlueAuto.PathState.SHOOT_PRELOAD);
                 break;
             case SHOOT_PRELOAD:
 
@@ -185,13 +185,13 @@ public class BlueAuto extends OpMode {
     }
 
 
-    public void setPathState(org.firstinspires.ftc.teamcode.Components.BlueAuto.PathState newState) {
+    public void setPathState(org.firstinspires.ftc.teamcode.Tests.BlueAuto.PathState newState) {
         pathState = newState;
         pathTimer.resetTimer();
     }
     @Override
     public void init() {
-        pathState = org.firstinspires.ftc.teamcode.Components.BlueAuto.PathState.DRIVE_STARTPOS_SHOOT_POS;
+        pathState = org.firstinspires.ftc.teamcode.Tests.BlueAuto.PathState.DRIVE_STARTPOS_SHOOT_POS;
         pathTimer = new Timer();
         opModeTimer = new Timer();
         opModeTimer.resetTimer();;

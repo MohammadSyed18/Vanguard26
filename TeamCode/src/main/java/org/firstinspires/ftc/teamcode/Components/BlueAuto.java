@@ -1,5 +1,8 @@
 
+/*
+
 package org.firstinspires.ftc.teamcode.Components;
+
 
 import android.provider.SyncStateContract;
 
@@ -80,3 +83,5 @@ public class BlueAuto extends OpMode {
 
     }
 }
+
+*/
