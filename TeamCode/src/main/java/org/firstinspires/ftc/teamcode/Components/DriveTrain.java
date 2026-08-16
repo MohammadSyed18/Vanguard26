@@ -1,77 +1,130 @@
 package org.firstinspires.ftc.teamcode.Components;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class DriveTrain {
 
     public DcMotorEx leftFront;
     public DcMotorEx leftBack;
-    public DcMotorEx rightBack;
     public DcMotorEx rightFront;
-
-    public double leftErrorAdjustment = 1.0;
-    public double rightErrorAdjustment = 1.0;
-/*
-    public LinearOpMode parent;
-
-    public Telemetry telemetry;
-
- */
+    public DcMotorEx rightBack;
 
     public DriveTrain(HardwareMap hardwareMap) {
 
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
         leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-
+        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
+        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
     }
 
     public void initialize() {
 
-        rightFront.setPower(0);
+        // Stop everything first
         leftFront.setPower(0);
         leftBack.setPower(0);
+        rightFront.setPower(0);
         rightBack.setPower(0);
 
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        /*
+         * Standard mecanum configuration.
+         *
+         * Depending on your exact motor mounting, you may need
+         * to reverse the opposite side instead.
+         *
+         * Test forward movement first.
+         */
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        leftFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        leftBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightBack.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        // Makes robot hold position instead of freely rolling
+        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        /*
+         * RUN_WITHOUT_ENCODER gives direct power control.
+         * Great for TeleOp mecanum driving.
+         */
+        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void TeleOpControl(boolean precision, double movement, double rotation, double strafe) {
-        double magnitude = Math.sqrt(Math.pow(strafe, 2) + Math.pow(movement, 2));
-        double direction = Math.atan2(strafe, -movement);
+    public void TeleOpControl(
+            boolean precision,
+            double movement,
+            double rotation,
+            double strafe
+    ) {
 
-        double lf = magnitude * Math.sin(direction + Math.PI / 4) + rotation;
-        double lb = magnitude * Math.cos(direction + Math.PI / 4) + rotation;
-        double rf = magnitude * Math.cos(direction + Math.PI / 4) - rotation;
-        double rb = magnitude * Math.sin(direction + Math.PI / 4) - rotation;
+        /*
+         * Inputs:
+         *
+         * movement = forward/backward
+         * strafe   = left/right
+         * rotation = turning
+         */
 
-        double hypot = Math.hypot(movement, strafe);
-        double ratio;
-        if (movement == 0 && strafe == 0)
-            ratio = 1;
-        else if (precision)
-            ratio = hypot / (Math.max(Math.max(Math.max(Math.abs(lf), Math.abs(lb)), Math.abs(rb)), Math.abs(rf))) / 2;
-        else
-            ratio = hypot / (Math.max(Math.max(Math.max(Math.abs(lf), Math.abs(lb)), Math.abs(rb)), Math.abs(rf)));
+        double y = movement;
+        double x = strafe;
+        double rx = rotation;
 
-        leftFront.setPower(ratio * lf * leftErrorAdjustment*1.25);
-        leftBack.setPower(ratio * lb * leftErrorAdjustment*1.25);
-        rightFront.setPower(ratio * rf * rightErrorAdjustment*1.25);
-        rightBack.setPower(ratio * rb * rightErrorAdjustment*1.25);
+        /*
+         * Standard mecanum drive equations
+         *
+         * FL = forward + strafe + rotation
+         * BL = forward - strafe + rotation
+         * FR = forward - strafe - rotation
+         * BR = forward + strafe - rotation
+         */
+
+        double leftFrontPower = y + x + rx;
+        double leftBackPower = y - x + rx;
+        double rightFrontPower = y - x - rx;
+        double rightBackPower = y + x - rx;
+
+        /*
+         * Normalize motor powers.
+         *
+         * If the largest requested power is > 1,
+         * divide everything by that number.
+         *
+         * This preserves direction ratios while still allowing
+         * at least one motor to hit full power.
+         */
+        double max = Math.max(
+                Math.max(Math.abs(leftFrontPower), Math.abs(leftBackPower)),
+                Math.max(Math.abs(rightFrontPower), Math.abs(rightBackPower))
+        );
+
+        if (max > 1.0) {
+            leftFrontPower /= max;
+            leftBackPower /= max;
+            rightFrontPower /= max;
+            rightBackPower /= max;
+        }
+
+        // Precision mode if you ever want slow driving
+        double speedMultiplier = precision ? 0.4 : 1.0;
+
+        leftFront.setPower(leftFrontPower * speedMultiplier);
+        leftBack.setPower(leftBackPower * speedMultiplier);
+        rightFront.setPower(rightFrontPower * speedMultiplier);
+        rightBack.setPower(rightBackPower * speedMultiplier);
+    }
+
+    public void stop() {
+        leftFront.setPower(0);
+        leftBack.setPower(0);
+        rightFront.setPower(0);
+        rightBack.setPower(0);
     }
 }
