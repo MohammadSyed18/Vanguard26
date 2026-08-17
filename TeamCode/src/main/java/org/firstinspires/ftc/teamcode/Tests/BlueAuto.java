@@ -194,7 +194,7 @@ public class BlueAuto extends OpMode {
         pathState = org.firstinspires.ftc.teamcode.Tests.BlueAuto.PathState.DRIVE_STARTPOS_SHOOT_POS;
         pathTimer = new Timer();
         opModeTimer = new Timer();
-        opModeTimer.resetTimer();;
+        opModeTimer.resetTimer();
 
         follower = Constants.createFollower(hardwareMap);
 
