@@ -1,3 +1,4 @@
+```java
 package org.firstinspires.ftc.teamcode.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -54,15 +55,28 @@ public class TestTeleOp1 extends LinearOpMode {
             // MECANUM DRIVING
             // ----------------------------
 
-            // Forward / backward
-            // Negative because FTC joystick Y is inverted
-            double movement = -gamepad1.left_stick_y;
+            /*
+             * FORWARD / BACKWARD
+             *
+             * IMPORTANT:
+             * We are NOT reversing this anymore.
+             *
+             * If pushing the stick forward now makes the robot
+             * move forward correctly, leave this exactly as-is.
+             */
+            double movement = gamepad1.left_stick_y;
 
-            // Left / right strafing
-            // Negative because your strafing direction was reversed
+            /*
+             * STRAFING
+             *
+             * This is reversed independently because your strafe
+             * direction was previously backwards.
+             */
             double strafe = -gamepad1.left_stick_x;
 
-            // Rotation
+            /*
+             * ROTATION
+             */
             double rotation = gamepad1.right_stick_x;
 
             drivetrain.TeleOpControl(
@@ -128,9 +142,36 @@ public class TestTeleOp1 extends LinearOpMode {
             // ----------------------------
             // TELEMETRY
             // ----------------------------
+
+            telemetry.addLine("=== DRIVE INPUTS ===");
+
             telemetry.addData("Drive", movement);
             telemetry.addData("Strafe", strafe);
             telemetry.addData("Rotation", rotation);
+
+            telemetry.addLine("=== DRIVE MOTOR POWERS ===");
+
+            telemetry.addData(
+                    "Left Front",
+                    drivetrain.getLeftFrontPower()
+            );
+
+            telemetry.addData(
+                    "Left Back",
+                    drivetrain.getLeftBackPower()
+            );
+
+            telemetry.addData(
+                    "Right Front",
+                    drivetrain.getRightFrontPower()
+            );
+
+            telemetry.addData(
+                    "Right Back",
+                    drivetrain.getRightBackPower()
+            );
+
+            telemetry.addLine("=== OTHER MOTORS ===");
 
             telemetry.addData(
                     "Turret Power",
@@ -191,5 +232,11 @@ public class TestTeleOp1 extends LinearOpMode {
 
             telemetry.update();
         }
+
+        // Safety stop after TeleOp ends
+        drivetrain.stop();
+        turretMotor.setPower(0);
+        intake.stop();
     }
 }
+```

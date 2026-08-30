@@ -14,48 +14,106 @@ public class DriveTrain {
 
     public DriveTrain(HardwareMap hardwareMap) {
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
-        leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
-        rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+        leftFront = hardwareMap.get(
+                DcMotorEx.class,
+                "leftFront"
+        );
+
+        leftBack = hardwareMap.get(
+                DcMotorEx.class,
+                "leftBack"
+        );
+
+        rightFront = hardwareMap.get(
+                DcMotorEx.class,
+                "rightFront"
+        );
+
+        rightBack = hardwareMap.get(
+                DcMotorEx.class,
+                "rightBack"
+        );
     }
 
     public void initialize() {
 
-        // Stop everything first
+        // ----------------------------
+        // STOP ALL MOTORS FIRST
+        // ----------------------------
         leftFront.setPower(0);
         leftBack.setPower(0);
         rightFront.setPower(0);
         rightBack.setPower(0);
 
-        /*
-         * Standard mecanum configuration.
-         *
-         * Depending on your exact motor mounting, you may need
-         * to reverse the opposite side instead.
-         *
-         * Test forward movement first.
-         */
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        // Makes robot hold position instead of freely rolling
-        leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        // ----------------------------
+        // MOTOR DIRECTIONS
+        // ----------------------------
 
         /*
-         * RUN_WITHOUT_ENCODER gives direct power control.
-         * Great for TeleOp mecanum driving.
+         * Standard setup for motors mirrored
+         * across the drivetrain.
+         *
+         * Left side reversed.
+         * Right side forward.
+         *
+         * DO NOT change rightFront independently
+         * just because that motor currently isn't moving.
+         * A completely dead motor is much more likely
+         * hardware/configuration related.
          */
-        leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFront.setDirection(
+                DcMotorSimple.Direction.REVERSE
+        );
+
+        leftBack.setDirection(
+                DcMotorSimple.Direction.REVERSE
+        );
+
+        rightFront.setDirection(
+                DcMotorSimple.Direction.FORWARD
+        );
+
+        rightBack.setDirection(
+                DcMotorSimple.Direction.FORWARD
+        );
+
+        // ----------------------------
+        // BRAKE MODE
+        // ----------------------------
+        leftFront.setZeroPowerBehavior(
+                DcMotor.ZeroPowerBehavior.BRAKE
+        );
+
+        leftBack.setZeroPowerBehavior(
+                DcMotor.ZeroPowerBehavior.BRAKE
+        );
+
+        rightFront.setZeroPowerBehavior(
+                DcMotor.ZeroPowerBehavior.BRAKE
+        );
+
+        rightBack.setZeroPowerBehavior(
+                DcMotor.ZeroPowerBehavior.BRAKE
+        );
+
+        // ----------------------------
+        // DIRECT TELEOP POWER CONTROL
+        // ----------------------------
+        leftFront.setMode(
+                DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        );
+
+        leftBack.setMode(
+                DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        );
+
+        rightFront.setMode(
+                DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        );
+
+        rightBack.setMode(
+                DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        );
     }
 
     public void TeleOpControl(
@@ -66,62 +124,117 @@ public class DriveTrain {
     ) {
 
         /*
-         * Inputs:
-         *
-         * movement = forward/backward
-         * strafe   = left/right
+         * movement = forward / backward
+         * strafe   = left / right
          * rotation = turning
          */
-
         double y = movement;
         double x = strafe;
         double rx = rotation;
 
-        /*
-         * Standard mecanum drive equations
-         *
-         * FL = forward + strafe + rotation
-         * BL = forward - strafe + rotation
-         * FR = forward - strafe - rotation
-         * BR = forward + strafe - rotation
-         */
-
-        double leftFrontPower = y + x + rx;
-        double leftBackPower = y - x + rx;
-        double rightFrontPower = y - x - rx;
-        double rightBackPower = y + x - rx;
+        // ----------------------------
+        // MECANUM MOTOR EQUATIONS
+        // ----------------------------
 
         /*
-         * Normalize motor powers.
+         * Forward:
+         * all four receive the same base power.
          *
-         * If the largest requested power is > 1,
-         * divide everything by that number.
+         * Strafe:
+         * diagonal wheels match.
          *
-         * This preserves direction ratios while still allowing
-         * at least one motor to hit full power.
+         * Rotation:
+         * left/right sides oppose each other.
          */
+        double leftFrontPower =
+                y + x + rx;
+
+        double leftBackPower =
+                y - x + rx;
+
+        double rightFrontPower =
+                y - x - rx;
+
+        double rightBackPower =
+                y + x - rx;
+
+        // ----------------------------
+        // NORMALIZE POWER
+        // ----------------------------
+
         double max = Math.max(
-                Math.max(Math.abs(leftFrontPower), Math.abs(leftBackPower)),
-                Math.max(Math.abs(rightFrontPower), Math.abs(rightBackPower))
+                Math.max(
+                        Math.abs(leftFrontPower),
+                        Math.abs(leftBackPower)
+                ),
+                Math.max(
+                        Math.abs(rightFrontPower),
+                        Math.abs(rightBackPower)
+                )
         );
 
         if (max > 1.0) {
+
             leftFrontPower /= max;
             leftBackPower /= max;
             rightFrontPower /= max;
             rightBackPower /= max;
         }
 
-        // Precision mode if you ever want slow driving
-        double speedMultiplier = precision ? 0.4 : 1.0;
+        // ----------------------------
+        // PRECISION MODE
+        // ----------------------------
 
-        leftFront.setPower(leftFrontPower * speedMultiplier);
-        leftBack.setPower(leftBackPower * speedMultiplier);
-        rightFront.setPower(rightFrontPower * speedMultiplier);
-        rightBack.setPower(rightBackPower * speedMultiplier);
+        double speedMultiplier =
+                precision ? 0.4 : 1.0;
+
+        // ----------------------------
+        // SEND POWER TO MOTORS
+        // ----------------------------
+
+        leftFront.setPower(
+                leftFrontPower * speedMultiplier
+        );
+
+        leftBack.setPower(
+                leftBackPower * speedMultiplier
+        );
+
+        rightFront.setPower(
+                rightFrontPower * speedMultiplier
+        );
+
+        rightBack.setPower(
+                rightBackPower * speedMultiplier
+        );
     }
 
+    // ----------------------------
+    // TELEMETRY GETTERS
+    // ----------------------------
+
+    public double getLeftFrontPower() {
+        return leftFront.getPower();
+    }
+
+    public double getLeftBackPower() {
+        return leftBack.getPower();
+    }
+
+    public double getRightFrontPower() {
+        return rightFront.getPower();
+    }
+
+    public double getRightBackPower() {
+        return rightBack.getPower();
+    }
+
+    // ----------------------------
+    // STOP DRIVETRAIN
+    // ----------------------------
+
     public void stop() {
+
         leftFront.setPower(0);
         leftBack.setPower(0);
         rightFront.setPower(0);
