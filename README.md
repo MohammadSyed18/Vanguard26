@@ -1,16 +1,16 @@
-# Vanguard26
+# vanguard26
 
-Robot code for our community FTC team. The default branch is `Vanguard2`.
+robot code for our community FTC team. the default branch is `Vanguard2`.
 
-Start with [TeamCode](TeamCode/src/main/java/org/firstinspires/ftc/teamcode):
-- [BasicTeleOp.java](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/BasicTeleOp.java)
-- [DriveTrain.java](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Components/DriveTrain.java)
-- [BlueAuto.java](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Components/BlueAuto.java)
-- [TestTeleOp1.java](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Tests/TestTeleOp1.java)
+start with [teamcode](teamcode/src/main/java/org/firstinspires/ftc/teamcode):
+- [basicteleop.java](teamcode/src/main/java/org/firstinspires/ftc/teamcode/basicteleop.java)
+- [drivetrain.java](teamcode/src/main/java/org/firstinspires/ftc/teamcode/components/drivetrain.java)
+- [blueauto.java](teamcode/src/main/java/org/firstinspires/ftc/teamcode/components/blueauto.java)
+- [testteleop1.java](teamcode/src/main/java/org/firstinspires/ftc/teamcode/tests/testteleop1.java)
 
-The team code covers mecanum driving, intake/shooter and servo controls, and Pedro Pathing autonomous routines. Hardware names and tuning values depend on the robot configuration.
+the team code covers mecanum driving, intake/shooter and servo controls, and Pedro Pathing autonomous routines. hardware names and tuning values depend on the robot configuration.
 
-The rest of this repository includes the FIRST SDK. Its original setup instructions and release notes are kept below.
+the rest of this repository includes the FIRST sdk. its original setup instructions and release notes are kept below.
 
 ---
 
