@@ -5,10 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import org.firstinspires.ftc.teamcode.Components.DriveTrain;
-import org.firstinspires.ftc.teamcode.Components.Intake;
-import org.firstinspires.ftc.teamcode.Components.Pusher;
-import org.firstinspires.ftc.teamcode.Components.ToucherXD;
-import org.firstinspires.ftc.teamcode.Components.Outtake;
 
 
 
